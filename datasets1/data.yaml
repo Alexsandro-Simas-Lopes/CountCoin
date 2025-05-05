@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 5
+names: ['1 real', '10 cent', '25 cent', '5 cent', '50 cent']
+
+roboflow:
+  workspace: moedas-xleqz
+  project: moedas-grzgg
+  version: 5
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/moedas-xleqz/moedas-grzgg/dataset/5
