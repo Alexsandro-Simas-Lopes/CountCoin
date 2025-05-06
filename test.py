@@ -13,21 +13,29 @@ model = YOLO('runs/detect/treinamento_moedas/weights/best.pt')
 url_img = 'imgs/coins.png' # Caminho da imagem
 nome_arquivo = os.path.basename(url_img) # Nome do Arquivo
 
-img = cv.imread(f"{url_img}")
-if img is None:
-    print(f"❌ Erro: não foi possível carregar {url_img}")
-    exit()
-    
+# Função de pré-processamento
+def preprocessar_imagem(caminho, tamanho=(640, 640)):
+    img = cv.imread(caminho)
+    if img is None:
+        raise ValueError(f"Erro ao carregar imagem: {caminho}")
+    img = cv.resize(img, tamanho)  # YOLO aceita várias resoluções, default é 640x640
+    # img = cv.GaussianBlur(img, (3, 3), 0)  Suavização leve
+    return img 
+
+# Pré-processamento da imagem
+img = preprocessar_imagem(url_img)
+# img = cv.imread(url_img)
+
+# Predição com YOLO (imagem já processada)
 results = model.predict(
     source=img,
     conf=0.80,    
     imgsz=640,
     save=False
 )
+print("results -->", results[0].boxes.cls)
 
-print("results -->", results[0].boxes.cls, results[0].boxes.cls)
-
-# Total detectado (antes do filtro, apenas para conferência)
+# Total detectado
 num = len(results[0].boxes)
 print(f"🔎 Número de detecções: {num}")
 
@@ -38,12 +46,14 @@ class_names = {
     3: '5 cent',
     4: '50 cent'
 }
-valor_moeda = {'1 real': 1.00,'5 cent': 0.05,'10 cent': 0.10,'25 cent': 0.25,'50 cent': 0.50}
+valor_moeda = {
+    '1 real': 1.00, '5 cent': 0.05, '10 cent': 0.10,
+    '25 cent': 0.25, '50 cent': 0.50
+}
 total_reais = 0.0
-
 melhores_deteccoes = {}
 
-# Salva apenas a melhor detecção de cada classe
+# Salva a melhor detecção de cada classe
 for box, conf, cls_id in zip(
     results[0].boxes.xyxy.cpu().numpy(),
     results[0].boxes.conf.cpu().numpy(),
@@ -52,7 +62,7 @@ for box, conf, cls_id in zip(
     if cls_id not in melhores_deteccoes or conf > melhores_deteccoes[cls_id]['conf']:
         melhores_deteccoes[cls_id] = {'conf': conf, 'box': box}
 
-# Desenha apenas as melhores detecções
+# Anotações na imagem
 for cls_id, info in melhores_deteccoes.items():
     box = info['box']
     conf = info['conf']
@@ -65,21 +75,20 @@ for cls_id, info in melhores_deteccoes.items():
     cv.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
     cv.putText(img, label, (x1, y1 - 10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
-    print("""
-          Moeda reconhecida
-          Moeda: {0}
-          Precisao: {1}
-          """.format(label_name, conf))
+    print(f"""
+        Moeda reconhecida
+        Moeda: {label_name}
+        Precisao: {conf:f}
+    """)
 
-# Mostra o total (comentado por enquanto)
-print(f"✅ Valor total detectado: R$ {total_reais:.2f}")
+# Salvar imagem
 cv.putText(img, f"Total: R$ {total_reais:.2f}", (10, 30), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
 nome_saida = os.path.join('runs/detect/predict', f"det_{nome_arquivo}")
 cv.imwrite(nome_saida, img)
-print(f"✅ Imagem salva em: {nome_saida}")
-
 cv.imwrite('runs/detect/predict/i.jpg', img)
+
+print(f"✅ Imagem salva em: {nome_saida}")
 print("✅ Imagem salva na route: runs/detect/predict/i.jpg")
 
 cv.imshow('Deteccoes', img)
