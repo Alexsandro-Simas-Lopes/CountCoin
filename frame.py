@@ -4,7 +4,7 @@ from ultralytics import YOLO
 model = YOLO('runs/detect/treinamento_moedas/weights/best.pt')
 
 # Use 0 para webcam, ou substitua por caminho de vídeo (ex: 'video.mp4')
-video_path = 0  # ou 'videos/moedas.mp4'
+video_path = 'test/4.mp4'  # ou 0 para webcam
 cap = cv.VideoCapture(video_path)
 
 class_names = {
@@ -61,5 +61,3 @@ while True:
 
 cap.release()
 cv.destroyAllWindows()
-
-

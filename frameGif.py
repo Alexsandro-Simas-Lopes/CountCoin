@@ -5,8 +5,8 @@ from PIL import Image
 from ultralytics import YOLO
 
 model = YOLO('runs/detect/treinamento_moedas/weights/best.pt')
-gif_path = 'gifs/1real.gif'
-nome_arquivo = os.path.basename(gif_path)
+gif_path = 'test/1real.gif'
+nome_arquivo = os.path.basename('test/4.mp4')
 
 class_names = {
     0: '1 real',
