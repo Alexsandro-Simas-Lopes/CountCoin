@@ -10,7 +10,7 @@ from ultralytics import YOLO
 # 50cent = 0.8467552661895752 | 0.9661579132080078
 
 model = YOLO('runs/detect/treinamento_moedas/weights/best.pt')
-url_img = 'test/6.jpg' # Caminho da imagem
+url_img = 'test/imgs/6.jpg' # Caminho da imagem
 nome_arquivo = os.path.basename(url_img) # Nome do Arquivo
 
 # Função de pré-processamento
