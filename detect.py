@@ -2,9 +2,14 @@ from ultralytics import YOLO
 import cv2 as cv
 import time
 import os
+from pathlib import Path
 
 # Carregar modelo treinado
 model = YOLO('runs/detect/treinamento_moedas/weights/best.pt')
+
+output_dir = Path("pseudo_dataset/train")
+images_dir = output_dir / "images"
+labels_dir = output_dir / "labels"
 
 # Fonte de vídeo
 video_test = 'tests/.mp4/coin/1_1.mp4'
@@ -28,8 +33,8 @@ class_values = {
 }
 
 # Criar diretórios para salvar dataset
-os.makedirs("pseudo_dataset/images", exist_ok=True)
-os.makedirs("pseudo_dataset/labels", exist_ok=True)
+os.makedirs(images_dir, exist_ok=True)
+os.makedirs(labels_dir, exist_ok=True)
 
 frame_id = 0
 
@@ -65,10 +70,10 @@ while True:
     # Salvar se houver detecção confiável
     if high_conf_detections:
         img_name = f"frame_{frame_id:04d}.jpg"
-        img_path = os.path.join("pseudo_dataset/images", img_name)
+        img_path = os.path.join(images_dir, img_name)
         cv.imwrite(img_path, clean_frame)
 
-        label_path = os.path.join("pseudo_dataset/labels", img_name.replace(".jpg", ".txt"))
+        label_path = os.path.join(labels_dir, img_name.replace(".jpg", ".txt"))
         with open(label_path, "w") as f:
             for cls, x, y, w_, h_ in high_conf_detections:
                 f.write(f"{cls} {x:.6f} {y:.6f} {w_:.6f} {h_:.6f}\n")
@@ -100,3 +105,18 @@ while True:
 cap.release()
 cv.destroyAllWindows()
 
+# Cria arquivo data.yaml temporário
+with open("pseudo_dataset/data.yaml", "w") as f:
+    f.write("""
+path: pseudo_dataset
+train: ../train/images
+val: ../valid/images
+test: ../test/images # pode mudar para um conjunto de validação real
+nc: 5  # número de classes
+names: ['1 real', '10 cent', '25 cent', '5 cent', '50 cent']  # nomes das classes
+""")
+
+# Re-treinar modelo com pseudo-labels
+print("\n🚀 Iniciando re-treino com pseudo-labels...")
+model.train(data=str("pseudo_dataset/data.yaml"), epochs=30, imgsz=640)
+print("✅ Re-treino concluído!")
