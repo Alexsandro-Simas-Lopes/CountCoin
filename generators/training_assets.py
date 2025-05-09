@@ -1,11 +1,11 @@
 from ultralytics import YOLO
 
 # 1. Escolher o modelo base (ex: yolov8n.pt)
-model = YOLO('yolov8n.pt')
+model = YOLO('../yolov8n.pt')
 
 # 2. Treinar o modelo com parâmetros extras
 model.train(
-    data='data/data.yaml',     # Caminho para o data.yaml
+    data='../pseudo_dataset/data.yaml',     # Caminho para o data.yaml
     epochs=100,                    # Número total de épocas
     imgsz=640,                     # Tamanho da imagem
     batch=16,                      # Tamanho do batch

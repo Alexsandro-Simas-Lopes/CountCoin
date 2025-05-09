@@ -4,6 +4,7 @@ from ultralytics import YOLO
 import cv2 as cv
 import os
 import time
+import datetime
 from pathlib import Path
 from .base import PipelineEtapa
 
@@ -37,7 +38,8 @@ class DetectorMoedas(PipelineEtapa):
             detections, total_value = self.extrair_deteccoes_confiaveis(results, w, h)
 
             if detections:
-                img_name = f"frame_{frame_id:04d}.jpg"
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+                img_name = f"frame_{timestamp}_{frame_id:04d}.jpg"
                 cv.imwrite(str(self.images_dir / img_name), frame)
                 with open(self.labels_dir / img_name.replace(".jpg", ".txt"), "w") as f:
                     for cls, bx, by, bw_, bh_ in detections:
@@ -49,7 +51,7 @@ class DetectorMoedas(PipelineEtapa):
                 break
 
             frame_id += 1
-            time.sleep(0.05)
+            time.sleep(0.01) 
 
         cap.release()
         cv.destroyAllWindows()
