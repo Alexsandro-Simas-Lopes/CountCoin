@@ -1,8 +1,1 @@
-datasets/test/images/*.jpg
-datasets/test/labels/*.txt
-
-datasets/train/images/*.jpg
-datasets/train/labels/*.txt
-
-datasets/valid/images/*.jpg
-datasets/valid/labels/*.txt
+__pycache__/

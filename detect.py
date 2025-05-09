@@ -10,7 +10,7 @@ if __name__ == "__main__":
     pipeline = PipelineMoeda()
     pipeline.adicionar_etapa(DetectorMoedas(
         model_path='runs/detect/treinamento_moedas/weights/best.pt',
-        video_path='tests/.mp4/coin/1_3.mp4',
+        video_path='tests/.mp4/9.mp4',
         output_dir='pseudo_dataset/temp',  # temp = pasta temporária
         class_values={0:1.00, 1:0.10, 2:0.25, 3:0.05, 4:0.50},
         class_names={0: '1.00 Real', 1: '0.10 Cent', 2: '0.25 Cent', 3: '0.05 Cent', 4: '0.50 Cent'}

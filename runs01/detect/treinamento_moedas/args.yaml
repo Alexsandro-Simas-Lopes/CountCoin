@@ -2,15 +2,15 @@ task: detect
 mode: train
 model: yolov8n.pt
 data: datasets/data.yaml
-epochs: 100
+epochs: 50
 time: null
-patience: 10
+patience: 100
 batch: 16
 imgsz: 640
 save: true
-save_period: 5
+save_period: -1
 cache: false
-device: cpu
+device: null
 workers: 8
 project: null
 name: treinamento_moedas
@@ -95,7 +95,6 @@ fliplr: 0.5
 bgr: 0.0
 mosaic: 1.0
 mixup: 0.0
-cutmix: 0.0
 copy_paste: 0.0
 copy_paste_mode: flip
 auto_augment: randaugment

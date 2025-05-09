@@ -1,0 +1,6 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 5
+names: ['1 real', '10 cent', '25 cent', '5 cent', '50 cent']
