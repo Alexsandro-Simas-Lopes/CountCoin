@@ -33,7 +33,7 @@ class DetectorMoedas(PipelineEtapa):
                 print("❌ Fim do vídeo ou falha ao ler frame.")
                 break
 
-            results = self.model.predict(source=frame, conf=0.5, save=False, verbose=False)[0]
+            results = self.model.predict(source=frame, conf=0.9, save=False, verbose=False)[0]
             h, w = frame.shape[:2]
             detections, total_value = self.extrair_deteccoes_confiaveis(results, w, h)
 
@@ -51,7 +51,7 @@ class DetectorMoedas(PipelineEtapa):
                 break
 
             frame_id += 1
-            time.sleep(0.01) 
+            time.sleep(0.02) 
 
         cap.release()
         cv.destroyAllWindows()
@@ -61,7 +61,7 @@ class DetectorMoedas(PipelineEtapa):
         total_value = 0.0
         for box in results.boxes:
             conf = float(box.conf)
-            if conf >= 0.9:
+            if conf >= 0.99:
                 cls = int(box.cls)
                 bx, by, bw, bh = box.xywh[0]
                 detections.append((cls, bx / w, by / h, bw / w, bh / h))

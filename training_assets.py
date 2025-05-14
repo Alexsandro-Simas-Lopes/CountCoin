@@ -5,7 +5,7 @@ model = YOLO('yolov8n.pt')
 
 # 2. Treinar o modelo com parâmetros extras
 model.train(
-    data='datasets/data.yaml',     # Caminho para o data.yaml
+    data='/home/alexlopes/Documentos/Projects_IA/countCoin/datasets/data.yaml',     # Caminho para o data.yaml
     epochs=100,                    # Número total de épocas
     imgsz=640,                     # Tamanho da imagem
     batch=16,                      # Tamanho do batch
